@@ -57,7 +57,7 @@ function sessionLabel() {
 async function startGaze(opts) {
   opts = opts || {};
   var wg = window.webgazer;
-  wg.params.faceMeshSolutionPath = "./mediapipe/face_mesh";
+  wg.params.faceMeshSolutionPath = "./vendor/mediapipe/face_mesh";   // relative to the page, not this file
   wg.params.showVideo = false;          // no face on screen by default (press V to toggle)
   wg.params.showFaceOverlay = false;
   wg.params.showFaceFeedbackBox = false;

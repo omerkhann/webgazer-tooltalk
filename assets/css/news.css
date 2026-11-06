@@ -1,0 +1,33 @@
+/* Mock news homepage: fits one screen, no scrolling.
+   This page is the test stimulus. Fixed heights below keep the story blocks and
+   menu links in the same place on every machine, so change them with care. */
+@font-face { font-family: "IBM Plex Serif"; font-weight: 400; font-display: swap; src: url("../fonts/ibm-plex-serif-400.woff2") format("woff2"); }
+@font-face { font-family: "IBM Plex Serif"; font-weight: 600; font-display: swap; src: url("../fonts/ibm-plex-serif-600.woff2") format("woff2"); }
+
+#page { position: fixed; inset: 0; display: flex; flex-direction: column; background: #fff; color: var(--ink); font-family: "IBM Plex Serif", Cambria, serif; }
+.masthead { height: 62px; flex: none; display: flex; justify-content: space-between; align-items: baseline; padding: 10px 24px 4px; border-bottom: 2px solid var(--ink); }
+.brand { font-size: 30px; line-height: 44px; font-weight: 600; letter-spacing: -.01em; }
+.date { font: 13px var(--sans); color: var(--muted); }
+/* deliberately dense menu: small links packed close together (Task 2 targets) */
+.menu { flex: none; display: flex; gap: 2px; padding: 4px 24px; border-bottom: 1px solid var(--line); font: 12px/16px var(--sans); }
+.menu a { color: var(--ink); text-decoration: none; padding: 3px 5px; border-radius: 2px; }
+.menu a:hover { background: var(--surface); }
+/* big story blocks (Task 1 targets) */
+.news { flex: 1; display: grid; gap: 14px; padding: 14px 24px 18px;
+  grid-template-columns: 1.6fr 1fr 1fr; grid-template-rows: 1fr 1fr;
+  grid-template-areas: "hero a b" "hero c d"; min-height: 0; }
+.story { display: flex; flex-direction: column; text-decoration: none; color: var(--ink); border: 1px solid var(--line); border-radius: 3px; overflow: hidden; min-height: 0; }
+.story:hover { border-color: var(--accent); }
+.story .img { flex: 1; min-height: 40px; }
+.story .txt { padding: 10px 12px 12px; }
+.story h2 { font-size: 18px; font-weight: 600; line-height: 1.25; margin: 4px 0; }
+.story p { font: 13px/1.45 var(--sans); margin: 0; color: var(--muted); }
+.tag { font: 500 11px var(--sans); text-transform: uppercase; letter-spacing: .05em; color: var(--bad); }
+.s-hero { grid-area: hero; } .s-hero h2 { font-size: 28px; } .s-hero p { font-size: 15px; }
+.s-a { grid-area: a; } .s-b { grid-area: b; } .s-c { grid-area: c; } .s-d { grid-area: d; }
+/* image placeholders */
+.s-hero .img { background: #5f88b3; }
+.s-a .img { background: #86a884; }
+.s-b .img { background: #c0a766; }
+.s-c .img { background: #62a47e; }
+.s-d .img { background: #9c90c2; }

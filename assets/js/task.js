@@ -67,10 +67,10 @@ async function runTask(mode) {
 
       var rows = counts.filter(function (c) { return c.n > 0; }).map(function (c) {
         var pct = Math.round(100 * c.n / total);
-        return "<tr><td>" + c.name + (c.name === clicked ? " <b>(clicked)</b>" : "") + "</td><td style='width:45%'><div class='bar' style='width:" + pct + "%'></div></td><td>" + pct + "%</td></tr>";
+        return "<tr><td>" + c.name + (c.name === clicked ? " <b>(clicked)</b>" : "") + "</td><td class='bar-cell'><div class='bar' style='width:" + pct + "%'></div></td><td class='num'>" + pct + "%</td></tr>";
       }).join("");
       var outPct = Math.round(100 * outside / total);
-      rows += "<tr><td class='muted'>" + (mode === "task2" ? "outside the menu links" : "outside the stories") + "</td><td><div class='bar' style='width:" + outPct + "%;background:#bbb'></div></td><td>" + outPct + "%</td></tr>";
+      rows += "<tr><td class='muted'>" + (mode === "task2" ? "outside the menu links" : "outside the stories") + "</td><td class='bar-cell'><div class='bar bar-outside' style='width:" + outPct + "%'></div></td><td class='num'>" + outPct + "%</td></tr>";
 
       var summary = mode === "task1"
         ? "Clicked <b>" + clicked + "</b> after " + elapsed + " s. Gaze landed on " + counts.filter(function (c) { return c.n / total >= 0.10; }).length + " stories (≥10% of samples each)."
@@ -82,9 +82,9 @@ async function runTask(mode) {
 
       var res = document.getElementById("res");
       res.innerHTML = "<h3>" + T.title + ": result</h3><p>" + summary + "</p>" +
-        "<p class='muted' style='margin:4px 0'>Share of gaze samples" + (mode === "task2" ? " (last 2 s before click)" : "") + ":</p>" +
+        "<p class='muted'>Share of gaze samples" + (mode === "task2" ? " (last 2 s before click)" : "") + ":</p>" +
         "<table>" + rows + "</table>" +
-        "<div class='row' style='margin-top:12px'><button id='hm'>Toggle heatmap (H)</button><button class='secondary' id='dl'>Gaze CSV</button>" +
+        "<div class='row actions'><button id='hm'>Toggle heatmap (H)</button><button class='secondary' id='dl'>Gaze CSV</button>" +
         "<button class='secondary' onclick='location.reload()'>Run again</button><a class='btn secondary' href='index.html'>Steps</a></div>";
       res.style.display = "block";
 
