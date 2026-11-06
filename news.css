@@ -1,0 +1,27 @@
+/* Mock news homepage: fits one screen, no scrolling. */
+#page { position: fixed; inset: 0; display: flex; flex-direction: column; background: #fff; font-family: Georgia, "Times New Roman", serif; }
+.masthead { display: flex; justify-content: space-between; align-items: baseline; padding: 10px 24px 4px; border-bottom: 3px double #1d1d1b; }
+.brand { font-size: 30px; font-weight: 700; letter-spacing: .5px; }
+.date { font: 13px system-ui, sans-serif; color: #6b6a64; }
+/* deliberately dense menu: small links packed close together (Task 2 targets) */
+.menu { display: flex; gap: 2px; padding: 4px 24px; border-bottom: 1px solid #d9d6cc; font: 12px system-ui, sans-serif; }
+.menu a { color: #1d1d1b; text-decoration: none; padding: 3px 5px; border-radius: 3px; }
+.menu a:hover { background: #eee; }
+/* big story blocks (Task 1 targets) */
+.news { flex: 1; display: grid; gap: 14px; padding: 14px 24px 18px;
+  grid-template-columns: 1.6fr 1fr 1fr; grid-template-rows: 1fr 1fr;
+  grid-template-areas: "hero a b" "hero c d"; min-height: 0; }
+.story { display: flex; flex-direction: column; text-decoration: none; color: #1d1d1b; border: 1px solid #e4e1d8; border-radius: 6px; overflow: hidden; min-height: 0; }
+.story:hover { border-color: #1f5fbf; }
+.story .img { flex: 1; min-height: 40px; }
+.story .txt { padding: 10px 12px 12px; }
+.story h2 { font-size: 18px; line-height: 1.25; margin: 4px 0; }
+.story p { font-size: 13px; margin: 0; color: #4a4943; font-family: system-ui, sans-serif; }
+.tag { font: 11px system-ui, sans-serif; text-transform: uppercase; letter-spacing: .6px; color: #b3261e; }
+.s-hero { grid-area: hero; } .s-hero h2 { font-size: 28px; } .s-hero p { font-size: 15px; }
+.s-a { grid-area: a; } .s-b { grid-area: b; } .s-c { grid-area: c; } .s-d { grid-area: d; }
+.s-hero .img { background: linear-gradient(135deg, #3a6ea5, #8fb3d9); }
+.s-a .img { background: linear-gradient(135deg, #5b8c5a, #b5d3a7); }
+.s-b .img { background: linear-gradient(135deg, #a5823a, #e3cf9a); }
+.s-c .img { background: linear-gradient(135deg, #2e7d4f, #8fd1a8); }
+.s-d .img { background: linear-gradient(135deg, #7a6aa5, #c4b9e3); }

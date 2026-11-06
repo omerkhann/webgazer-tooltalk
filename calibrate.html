@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calibrate</title>
+<link rel="stylesheet" href="style.css">
+<style>
+  .dot { position: fixed; width: 26px; height: 26px; margin: -13px 0 0 -13px; border-radius: 50%;
+         background: #b3261e; border: 3px solid #fff; box-shadow: 0 0 0 1px #999; cursor: pointer; z-index: 500; }
+  .dot.done { background: #2e7d4f; cursor: default; }
+</style>
+<script src="config.js"></script>
+<script src="common.js"></script>
+<script src="lib/webgazer.js"></script>
+</head>
+<body>
+<div class="hud" id="hud"></div>
+<div class="noface" id="noface">Face not detected. Check lighting and sit facing the camera.</div>
+
+<div class="overlay" id="intro">
+  <div class="panel">
+    <h2>Step 0 · Calibration</h2>
+    <p>WebGazer has to learn what <b>your</b> eyes look like before it can estimate where you are looking.</p>
+    <ol>
+      <li>Sit about an arm's length from the screen, face lit from the front. Keep your head still from now on.</li>
+      <li>Optional: press <kbd>V</kbd> to see the camera preview and check your face is inside the box, then press <kbd>V</kbd> again to hide it.</li>
+      <li>9 red dots will appear. <b>Look straight at a dot and click it 5 times</b> while looking at it. It turns green when done.</li>
+    </ol>
+    <p class="muted">Allow camera access when asked. The video stays in this browser.</p>
+    <button id="go" disabled>Starting camera…</button>
+  </div>
+</div>
+
+<div class="overlay" id="done" style="display:none">
+  <div class="panel">
+    <h2>Calibration done ✓</h2>
+    <p>Look around the screen. The red gaze dot should roughly follow your eyes. If it's far off, recalibrate.</p>
+    <div class="row"><a class="btn" href="index.html">Back to steps</a><button class="secondary" onclick="location.reload()">Recalibrate</button></div>
+  </div>
+</div>
+
+<script>
+(async function () {
+  document.getElementById("hud").textContent = sessionLabel();
+  var go = document.getElementById("go");
+  try {
+    await startGaze({ training: true, showDot: false });
+    // fresh calibration every time this page is used
+    try { await webgazer.clearData(); } catch (e) {}
+  } catch (e) {
+    go.textContent = "Camera failed: " + (e && e.message ? e.message : e);
+    return;
+  }
+  var mark = faceWatch(document.getElementById("noface"));
+  onGaze(function (p) { if (p) mark(); });
+  go.disabled = false; go.textContent = "Start calibration";
+
+  go.onclick = function () {
+    document.getElementById("intro").style.display = "none";
+    var pos = [10, 50, 90], remaining = 9;
+    pos.forEach(function (y) { pos.forEach(function (x) {
+      var d = document.createElement("div"); d.className = "dot";
+      d.style.left = x + "vw"; d.style.top = y + "vh";
+      var n = 0;
+      d.addEventListener("click", function () {
+        if (d.classList.contains("done")) return;
+        n++; d.style.opacity = String(1 - n * 0.12);
+        if (n >= 5) { d.classList.add("done"); d.style.opacity = "1"; remaining--;
+          if (!remaining) setTimeout(function () {
+            document.querySelectorAll(".dot").forEach(function (x) { x.remove(); });
+            webgazer.showPredictionPoints(true);
+            document.getElementById("done").style.display = "flex";
+            document.getElementById("done").style.background = "rgba(246,245,241,.6)";
+            tagClarity("calibrate");
+          }, 300);
+        }
+      });
+      document.body.appendChild(d);
+    }); });
+  };
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WebGazer Test Site</title>
+<link rel="stylesheet" href="style.css">
+<script src="config.js"></script>
+<script src="common.js"></script>
+</head>
+<body>
+<div class="wrap">
+  <h1>WebGazer Tool Talk: test site</h1>
+  <p class="muted">Team D13 Cactus · CS-3014 Applied HCI. Webcam eye tracking (WebGazer.js) compared with Microsoft Clarity. Video is processed only in this browser. Nothing from the camera is uploaded or recorded.</p>
+
+  <div class="card">
+    <h2>1. Session</h2>
+    <div class="row">
+      <label>Participant <input id="participant" size="6" value="P1"></label>
+      <label>Condition
+        <select id="condition">
+          <option value="baseline">baseline</option>
+          <option value="glasses">glasses</option>
+          <option value="dim-light">dim light</option>
+          <option value="head-moved">head moved after calibration</option>
+        </select>
+      </label>
+      <span id="saved" class="muted"></span>
+    </div>
+    <p class="muted" style="margin-bottom:0">Set this before each run. Every result is saved with it.</p>
+  </div>
+
+  <div class="card">
+    <h2>2. Run the steps in order</h2>
+    <div class="steps">
+      <a class="step" href="calibrate.html"><b>Step 0 · Calibrate</b><span>Look at each dot and click it 5 times. Redo whenever the person, seat or lighting changes.</span></a>
+      <a class="step" href="grid.html?size=2"><b>Step 1 · Big targets</b><span>2×2 grid, 8 trials. Hit rate is calculated automatically.</span></a>
+      <a class="step" href="grid.html?size=6"><b>Step 2 · Small targets</b><span>6×6 grid, 8 trials. Hit rate is calculated automatically.</span></a>
+      <a class="step" href="task1.html"><b>Task 1 · Pick a story</b><span>Large regions, where it should work. Gaze share per story vs. the click.</span></a>
+      <a class="step" href="task2.html"><b>Task 2 · Find "Sports"</b><span>Small menu links, where it should fail. Gaze spread across links.</span></a>
+    </div>
+    <p class="muted">On test pages: <kbd>D</kbd> toggles the gaze dot, <kbd>H</kbd> toggles the heatmap (after a run), <kbd>V</kbd> toggles the camera preview (shows your face, so keep it off while recording). Use full screen (<kbd>F11</kbd>) and keep the same window size for every run.</p>
+  </div>
+
+  <div class="card">
+    <h2>3. Results</h2>
+    <div class="row" style="margin-bottom:12px">
+      <button id="csv">Download results CSV</button>
+      <button class="secondary" id="clearCal">Clear calibration (new participant)</button>
+      <button class="danger" id="clearRes">Delete all results</button>
+    </div>
+    <div style="overflow-x:auto"><table id="tbl"></table></div>
+  </div>
+
+  <div class="card">
+    <h2>Failure-condition protocol</h2>
+    <ul>
+      <li><b>glasses / dim light</b>: clear calibration, recalibrate <i>in that condition</i>, then run Step 1 (and Step 2 if time allows).</li>
+      <li><b>head moved</b>: calibrate normally, then lean back or shift sideways about 20 cm <i>without</i> recalibrating, then run Step 1.</li>
+      <li>Compare each hit rate with that person's baseline.</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+(function () {
+  var s = getSession();
+  var pEl = document.getElementById("participant"), cEl = document.getElementById("condition");
+  pEl.value = s.participant; cEl.value = s.condition;
+  function save() {
+    setSession({ participant: pEl.value.trim() || "P1", condition: cEl.value });
+    document.getElementById("saved").textContent = "Saved: " + sessionLabel();
+  }
+  pEl.addEventListener("input", save); cEl.addEventListener("change", save); save();
+
+  var cols = ["time", "participant", "condition", "test", "hits", "trials", "hit_rate", "mean_error_px", "clicked", "detail", "viewport"];
+  function render() {
+    var rows = Store.get("wg_results", []);
+    var t = document.getElementById("tbl");
+    if (!rows.length) { t.innerHTML = "<tr><td class='muted'>No results yet.</td></tr>"; return; }
+    t.innerHTML = "<tr>" + cols.map(function (c) { return "<th>" + c + "</th>"; }).join("") + "</tr>" +
+      rows.slice().reverse().map(function (r) {
+        return "<tr>" + cols.map(function (c) {
+          var v = r[c] === undefined ? "" : r[c];
+          if (c === "time") v = String(v).replace("T", " ").slice(0, 19);
+          return "<td>" + String(v).replace(/</g, "&lt;") + "</td>";
+        }).join("") + "</tr>";
+      }).join("");
+  }
+  render();
+
+  document.getElementById("csv").onclick = function () {
+    var rows = Store.get("wg_results", []);
+    var esc = function (v) { v = v === undefined ? "" : String(v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
+    downloadText("webgazer-results.csv", cols.join(",") + "\n" + rows.map(function (r) { return cols.map(function (c) { return esc(r[c]); }).join(","); }).join("\n"));
+  };
+  document.getElementById("clearRes").onclick = function () {
+    if (confirm("Delete ALL saved results? Download the CSV first.")) { Store.set("wg_results", []); render(); }
+  };
+  document.getElementById("clearCal").onclick = function () {
+    try { indexedDB.deleteDatabase("localforage"); } catch (e) {}
+    try { Object.keys(localStorage).forEach(function (k) { if (k.indexOf("localforage") === 0 || k.indexOf("webgazer") === 0) localStorage.removeItem(k); }); } catch (e) {}
+    this.textContent = "Calibration cleared ✓";
+  };
+  tagClarity("hub");
+})();
+</script>
+</body>
+</html>

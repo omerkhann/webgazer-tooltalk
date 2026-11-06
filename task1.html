@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Task 1 Pick a Story</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="news.css">
+<script src="config.js"></script>
+<script src="common.js"></script>
+<script src="lib/webgazer.js"></script>
+<script src="news.js"></script>
+<script src="task.js"></script>
+</head>
+<body>
+<div id="page"></div>
+<div class="hud" id="hud"></div>
+<div class="noface" id="noface">Face not detected</div>
+<canvas id="heat"></canvas>
+<div class="overlay" id="intro">
+  <div class="panel">
+    <h2 id="title"></h2>
+    <p id="instr"></p>
+    <p class="muted" id="note"></p>
+    <p class="muted">Calibrate first (Step 0). The gaze dot stays hidden during the task. Press <kbd>D</kbd> to show it for a demo recording.</p>
+    <button id="go" disabled>Starting camera…</button>
+  </div>
+</div>
+<div class="results" id="res"></div>
+<script>runTask("task1");</script>
+</body>
+</html>
