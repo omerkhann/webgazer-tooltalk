@@ -3,5 +3,5 @@
 // Find it in Clarity: Settings -> Setup -> the code after "https://www.clarity.ms/tag/"
 // Leave it empty ("") to run without Clarity.
 window.CONFIG = {
-  CLARITY_ID: "z9c245iuqw"
+  CLARITY_ID: " "
 };
